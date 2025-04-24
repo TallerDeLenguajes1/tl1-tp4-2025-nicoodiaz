@@ -20,6 +20,9 @@ struct
 TNodo *CrearListaVacia();
 TNodo *CrearNodo(int Id, char *descripcion, int duracion);
 
+void InsertarNodo (TNodo **Start, TNodo *Nodo);
+void CrearTarea (TNodo **Start);
+
 int main()
 {
     //Creo el comienzo de la lista apuntando a NULL
@@ -47,4 +50,12 @@ TNodo *CrearNodo(int Id, char *descripcion, int duracion)
     Tarea->Siguiente = NULL;
 
     return Tarea;
+}
+
+void InsertarNodo (TNodo **Start, TNodo *Nodo)//Start(Cabecera), Nodo(Nuevo que queremos insertar)
+{
+    //Aqui hago que el nuevo nodo, apunte al comienzo de la lista
+    Nodo->Siguiente = *Start;
+    //Aqui hago que estar apunte al nuevo nodo
+    *Start = Nodo;
 }
