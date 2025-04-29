@@ -34,10 +34,103 @@ Nodo *EliminarNodo(Nodo *NodoAEliminar);
 void MostrarTodasTareas(Nodo **nodo);
 void MostrarTareaPorID(Nodo *Start, int id);
 
+void CambiarEstado(Nodo **Start, Nodo **Start2, int ID);
+
 int main()
 {
     //Creo el comienzo de la lista apuntando a NULL
     Nodo *Start = CrearListaVacia();
+    //Creo el comienzo de la lista para las tareas realizadas
+    Nodo *StartRealizadas = CrearListaVacia();
+
+    int opciones = 0;
+    //Interfaz de Menu
+    do
+    {
+        printf("\n------Lista de Tareas-------\n");
+        printf("Elige una de las siguientes opciones: \n");
+        printf("1. Listar tareas\n");
+        printf("2. Crear una tarea\n");
+        printf("3. Cambiar estado de la tarea\n");
+        printf("4. Buscar tarea por ID\n");
+        printf("5. Buscar tarea por palabra clave\n");
+        printf("6. Salir\n");
+        scanf("%d", &opciones);
+        switch (opciones)
+        {
+        case 1:
+            int opcionTarea = 0;
+            printf("Elija una opcion: \n");
+            printf("1. Mostrar todas las tareas");
+            printf("2. Mostrar las tareas pendientes\n");
+            printf("3. Mostrar las Realizadas\n");
+            if (opcionTarea == 1)
+            {
+                MostrarTodasTareas(&Start);
+                MostrarTodasTareas(&StartRealizadas);
+            }
+            else if(opcionTarea == 2)
+            {
+                MostrarTodasTareas(&Start);
+            }
+            else
+            {
+                MostrarTodasTareas(&StartRealizadas);
+            }
+            break;
+        case 2:
+            CrearTarea(&Start);
+            break;
+        case 3:
+            int IDTareaACambiar = 0;
+            printf("Ingrese el ID de la tarea que quiere cambiar: \n");
+            scanf("%d", &IDTareaACambiar);
+            CambiarEstado(&Start, &StartRealizadas, IDTareaACambiar);
+            break;
+        case 4:
+            int IDTareaSeleccionar;
+            Nodo *Aux;
+            Nodo *AuxRealizadas;
+            printf("Ingrese el numero de de ID a buscar\n");
+            scanf("%d", &IDTareaSeleccionar);
+            Aux = BuscarNodoId(Start, IDTareaSeleccionar);
+            AuxRealizadas = BuscarNodoId(StartRealizadas, IDTareaSeleccionar);
+            if (Aux)
+            {
+                MostrarTareaPorID(Aux, IDTareaSeleccionar);
+            }
+            if (AuxRealizadas)
+            {
+                MostrarTareaPorID(AuxRealizadas, IDTareaSeleccionar);
+            }
+            if (!Aux && !AuxRealizadas)
+            {
+                printf("No existe esa tarea");
+            }
+            break;
+        case 5:
+            Nodo *AuxP;
+            char Palabra[20];
+            fflush(stdin);
+            printf("A seleccionado \"Buscar tarea por palabra clave\" \n");
+            printf("Porfavor ingrese la palabra :  ");
+            gets(Palabra);
+            fflush(stdin);
+            AuxP = BuscarNodoPalabra(Start, Palabra);
+            if (AuxP != NULL)
+            {
+                int ID = AuxP->T.TareaID;
+                MostrarTareaPorID(AuxP, ID);
+            }
+            else
+            {
+                printf("No se encontró ninguna tarea con esa palabra clave.\n");
+            }
+            break;
+        }
+
+    } while (opciones != 6);
+    
 
     return 0;
 }
@@ -193,5 +286,19 @@ void MostrarTareaPorID(Nodo *Start, int id)
     else
     {
         printf("Pendiente");
+    }
+}
+//Funcion para cambiar el estado de las tareas
+void CambiarEstado(Nodo **Start, Nodo **Start2, int ID)
+//Star es donde buscamos y Star2 es la lista donde la queremos mover
+{
+    Nodo *NodoAMover = QuitarNodo(Start, ID);
+    if(NodoAMover)
+    {
+        InsertarNodo(Start2, NodoAMover);
+    }
+    else
+    {
+        printf("La tarea con el id %d, no existe", ID);
     }
 }
